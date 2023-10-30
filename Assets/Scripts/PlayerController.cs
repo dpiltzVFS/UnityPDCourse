@@ -14,12 +14,18 @@ public class PlayerController : MonoBehaviour
     public float speed = 0.0f;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
+    public AudioClip loseSound;
+    public AudioClip pickupSound;
+    private AudioSource source;
+
 
     void Start()
     {
         rb= GetComponent<Rigidbody>();
         count = 0;
         winTextObject.SetActive(false);
+        source = GetComponent<AudioSource>();
+
     }
     private void FixedUpdate()
     {
@@ -39,6 +45,8 @@ public class PlayerController : MonoBehaviour
         if (count > 11)
         {
             winTextObject.SetActive(true);
+            if(loseSound != null)
+                source.PlayOneShot(loseSound);
             Destroy(GameObject.FindGameObjectWithTag("Enemy"));
         }
     }
@@ -48,6 +56,8 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             count = count + 1;
+            if (pickupSound != null)    
+                source.PlayOneShot(pickupSound);
 
         }
     }
