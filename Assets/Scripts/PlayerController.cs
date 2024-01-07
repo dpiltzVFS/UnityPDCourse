@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     public GameObject mainCamera;
     private Vector3 ballDirection;
     public float rotationSpeed = 0.5f;
+    float yRotation = 0f;
+    float xRotation = 0f;
 
 
     void Awake()
@@ -49,37 +51,14 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         ballDirection = oldPosition - transform.position;
-        Debug.Log("ballDirection = " + ballDirection);
+        //Debug.Log("ballDirection = " + ballDirection);
         oldPosition = transform.position;
+        MoveBubbleBoy();
     }
     private void FixedUpdate()
     {
         Vector3 movement = new Vector3(movementX,0.0f,movementY);
         rb.AddForce(movement * speed);
-
-        float yRotation;
-        float xRotation;
-
-        if (movementY < 0.0f) yRotation = -180.0f;
-        else yRotation = 0f;
-
-        if (movementX < 0.0f)
-        {
-            xRotation = 10f;
-        }
-        else if (movementX > 0.0f)
-        {
-            xRotation = -10f;
-        }
-        else xRotation = 0f;
-  
-        Quaternion rotation = Quaternion.identity;
-        rotation.eulerAngles = new Vector3(0f, yRotation, xRotation);
-
-        //bubbleBoy.transform.SetPositionAndRotation(transform.position + bubbleBoyOffset, rotation);
-        bubbleBoy.transform.position = transform.position + bubbleBoyOffset;
-        bubbleBoy.transform.rotation = Quaternion.Lerp(bubbleBoy.transform.rotation, rotation, 1f * Time.deltaTime);
-
     }
     void OnMove(InputValue movementValue)
     {
@@ -125,6 +104,29 @@ public class PlayerController : MonoBehaviour
             Instantiate(explosionVFX, transform.position, Quaternion.identity);
 
         }
+    }
+
+    private void MoveBubbleBoy()
+    {
+        
+
+        if (movementX == 0f && movementY > 0) yRotation = 0f;
+        else if (movementX > 0f && movementY > 0f) yRotation = 45f;
+        else if (movementX > 0f && movementY == 0f) yRotation = 90f;
+        else if (movementX > 0f && movementY < 0f) yRotation = 135f;
+        else if (movementX == 0f && movementY < 0f) yRotation = 180f;
+        else if (movementX < 0f && movementY < 0f) yRotation = 225f;
+        else if (movementX < 0f && movementY == 0f) yRotation = 270f;
+        else if (movementX < 0f && movementY > 0f) yRotation = 315f;
+
+        Debug.Log("xRotation = " + xRotation + "yRotation = " + yRotation);
+
+        Quaternion rotation = Quaternion.identity;
+        rotation.eulerAngles = new Vector3(0f, yRotation, xRotation);
+
+        //bubbleBoy.transform.SetPositionAndRotation(transform.position + bubbleBoyOffset, rotation);
+        bubbleBoy.transform.position = transform.position + bubbleBoyOffset;
+        bubbleBoy.transform.rotation = Quaternion.Lerp(bubbleBoy.transform.rotation, rotation, rotationSpeed * Time.deltaTime);
     }
 
 }
